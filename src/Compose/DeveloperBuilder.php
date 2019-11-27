@@ -50,10 +50,15 @@ class DeveloperBuilder extends ProductionBuilder
             ];
         }
 
-        $compose['volumes'] = [
-            'magento-sync' => $syncConfig,
-            'magento-db' => []
-        ];
+        $os = $this->getConfig()->get(self::KEY_OS);
+
+        if(self::OS_LINUX !== $os)
+        {
+            $compose['volumes'] = [
+                'magento-sync' => $syncConfig,
+                'magento-db' => []
+            ];
+        }
 
         return $compose;
     }
@@ -67,6 +72,12 @@ class DeveloperBuilder extends ProductionBuilder
 
         if ($this->getConfig()->get(self::KEY_SYNC_ENGINE) !== self::SYNC_ENGINE_NATIVE) {
             $target .= ':nocopy';
+        }
+
+        if($this->getConfig()->get(self::KEY_OS) === self::OS_LINUX ) {
+            return [
+                './:' . $target
+            ];
         }
 
         return [
