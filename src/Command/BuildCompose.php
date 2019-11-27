@@ -40,6 +40,7 @@ class BuildCompose extends Command
     private const OPTION_MODE = 'mode';
     private const OPTION_SYNC_ENGINE = 'sync-engine';
     private const OPTION_NO_CRON = 'no-cron';
+    private const OPTION_OS = 'os';
 
     /**
      * Option key to service name map.
@@ -53,7 +54,7 @@ class BuildCompose extends Command
         self::OPTION_REDIS => ServiceInterface::NAME_REDIS,
         self::OPTION_ES => ServiceInterface::NAME_ELASTICSEARCH,
         self::OPTION_NODE => ServiceInterface::NAME_NODE,
-        self::OPTION_RABBIT_MQ => ServiceInterface::NAME_RABBITMQ,
+        self::OPTION_RABBIT_MQ => ServiceInterface::NAME_RABBITMQ
     ];
 
     /**
@@ -163,6 +164,23 @@ class BuildCompose extends Command
                 BuilderFactory::BUILDER_PRODUCTION
             )
             ->addOption(
+                self::OPTION_OS,
+                'o',
+                InputOption::VALUE_REQUIRED,
+                sprintf(
+                    'Operating system (%s)',
+                    implode(
+                        ', ',
+                        [
+                            ProductionBuilder::OS_LINUX,
+                            ProductionBuilder::OS_WINDOWS,
+                            ProductionBuilder::OS_MAC,
+                        ]
+                    )
+                ),
+                BuilderFactory::BUILDER_PRODUCTION
+            )
+            ->addOption(
                 self::OPTION_SYNC_ENGINE,
                 null,
                 InputOption::VALUE_REQUIRED,
@@ -190,6 +208,7 @@ class BuildCompose extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $type = $input->getOption(self::OPTION_MODE);
+        $os = $input->getOption(self::OPTION_OS);
         $syncEngine = $input->getOption(self::OPTION_SYNC_ENGINE);
 
         $builder = $this->builderFactory->create($type);
@@ -205,6 +224,15 @@ class BuildCompose extends Command
             ));
         }
 
+        if (!in_array($os, ProductionBuilder::OS_LIST, true)
+        ) {
+            throw new GenericException(sprintf(
+                "Operating system '%s' is not supported. Available: %s",
+                $os,
+                implode(', ', ProductionBuilder::OS_LIST)
+            ));
+        }
+
         array_walk(self::$optionsMap, static function ($key, $option) use ($config, $input) {
             if ($value = $input->getOption($option)) {
                 $config->set($key, $value);
@@ -213,7 +241,8 @@ class BuildCompose extends Command
 
         $config->set([
             DeveloperBuilder::KEY_SYNC_ENGINE => $syncEngine,
-            ProductionBuilder::KEY_NO_CRON => $input->getOption(self::OPTION_NO_CRON)
+            ProductionBuilder::KEY_NO_CRON => $input->getOption(self::OPTION_NO_CRON),
+            ProductionBuilder::KEY_OS => $input->getOption(self::OPTION_OS)
         ]);
 
         if (in_array(

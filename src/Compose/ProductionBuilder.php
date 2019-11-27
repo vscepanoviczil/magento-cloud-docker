@@ -35,6 +35,18 @@ class ProductionBuilder implements BuilderInterface
 
     public const KEY_NO_CRON = 'no-cron';
 
+    public const OS_LINUX = 'linux';
+    public const OS_WINDOWS = 'windows';
+    public const OS_MAC = 'mac-os';
+
+    public const KEY_OS = 'os';
+
+    public const OS_LIST = [
+        self::OS_LINUX,
+        self::OS_WINDOWS,
+        self::OS_MAC
+    ];
+
     /**
      * @var ServiceFactory
      */
