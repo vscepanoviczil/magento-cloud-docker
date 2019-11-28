@@ -178,7 +178,7 @@ class BuildCompose extends Command
                         ]
                     )
                 ),
-                BuilderFactory::BUILDER_PRODUCTION
+                ProductionBuilder::OS_LINUX
             )
             ->addOption(
                 self::OPTION_SYNC_ENGINE,

@@ -52,8 +52,9 @@ class DeveloperBuilder extends ProductionBuilder
 
         $os = $this->getConfig()->get(self::KEY_OS);
 
-        if(self::OS_LINUX !== $os)
-        {
+        if (self::OS_LINUX === $os) {
+            unset($compose['volumes']);
+        } else {
             $compose['volumes'] = [
                 'magento-sync' => $syncConfig,
                 'magento-db' => []
@@ -70,11 +71,12 @@ class DeveloperBuilder extends ProductionBuilder
     {
         $target = self::DIR_MAGENTO;
 
-        if ($this->getConfig()->get(self::KEY_SYNC_ENGINE) !== self::SYNC_ENGINE_NATIVE) {
+        if ($this->getConfig()->get(self::KEY_SYNC_ENGINE) !== self::SYNC_ENGINE_NATIVE &&
+            $this->getConfig()->get(self::KEY_OS) !== self::OS_LINUX) {
             $target .= ':nocopy';
         }
 
-        if($this->getConfig()->get(self::KEY_OS) === self::OS_LINUX ) {
+        if ($this->getConfig()->get(self::KEY_OS) === self::OS_LINUX) {
             return [
                 './:' . $target
             ];
@@ -91,6 +93,17 @@ class DeveloperBuilder extends ProductionBuilder
     protected function getMagentoBuildVolumes(bool $isReadOnly): array
     {
         return $this->getMagentoVolumes($isReadOnly);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getMagentoDbVolumes(): array
+    {
+        return [
+            './var/lib/mysql:/var/lib/mysql',
+            '.docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d'
+        ];
     }
 
     /**

@@ -142,10 +142,7 @@ class ProductionBuilder implements BuilderInterface
                         ],
                     ],
                     'volumes' => array_merge(
-                        [
-                            'magento-db:/var/lib/mysql',
-                            '.docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d'
-                        ],
+                        $this->getMagentoDbVolumes(),
                         $this->getDockerMount()
                     )
                 ]
@@ -494,6 +491,17 @@ class ProductionBuilder implements BuilderInterface
             'magento:' . self::DIR_MAGENTO . $flag,
             'magento-vendor:' . self::DIR_MAGENTO . '/vendor' . $flag,
             'magento-generated:' . self::DIR_MAGENTO . '/generated' . $flag,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getMagentoDbVolumes(): array
+    {
+        return [
+            'magento-db:/var/lib/mysql',
+            '.docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d'
         ];
     }
 
