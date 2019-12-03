@@ -453,11 +453,22 @@ class ProductionBuilder implements BuilderInterface
          *
          * WINDOWS_PWD=//C/www/my-project
          */
-        if (stripos(PHP_OS, 'win') === 0) {
+
+        $os = $this->getOs();
+
+        if (self::OS_WINDOWS === $os) {
             return '${WINDOWS_PWD}';
         }
 
         return '${PWD}';
+    }
+
+    /**
+     * @return string Current OS flag
+     */
+    protected function getOs()
+    {
+        return $this->getConfig()->get(self::KEY_OS);
     }
 
     /**
@@ -467,6 +478,20 @@ class ProductionBuilder implements BuilderInterface
     protected function getMagentoVolumes(bool $isReadOnly): array
     {
         $flag = $isReadOnly ? ':ro' : ':rw';
+
+        $os = $this->getOs();
+
+        if (self::OS_LINUX === $os) {
+            return [
+                $rootPath = $this->getRootPath() . ':' . self::DIR_MAGENTO . $flag,
+                $rootPath = $this->getRootPath() . 'vendor:' . self::DIR_MAGENTO . '/vendor' . $flag,
+                $rootPath = $this->getRootPath() . 'generated:' . self::DIR_MAGENTO . '/generated' . $flag,
+                $rootPath = $this->getRootPath() . 'var:' . self::DIR_MAGENTO . '/var:delegated',
+                $rootPath = $this->getRootPath() . 'app/etc:' . self::DIR_MAGENTO . '/app/etc:delegated',
+                $rootPath = $this->getRootPath() . 'pub/static:' . self::DIR_MAGENTO . '/pub/static:delegated',
+                $rootPath = $this->getRootPath() . 'pub/media:' . self::DIR_MAGENTO . '/pub/media:delegated',
+            ];
+        }
 
         return [
             'magento:' . self::DIR_MAGENTO . $flag,
@@ -487,6 +512,16 @@ class ProductionBuilder implements BuilderInterface
     {
         $flag = $isReadOnly ? ':ro' : ':rw';
 
+        $os = $this->getOs();
+
+        if (self::OS_LINUX === $os) {
+            return [
+                $rootPath = $this->getRootPath() . ':' . self::DIR_MAGENTO . $flag,
+                $rootPath = $this->getRootPath() . 'vendor:' . self::DIR_MAGENTO . '/vendor' . $flag,
+                $rootPath = $this->getRootPath() . 'generated:' . self::DIR_MAGENTO . '/generated' . $flag,
+            ];
+        }
+
         return [
             'magento:' . self::DIR_MAGENTO . $flag,
             'magento-vendor:' . self::DIR_MAGENTO . '/vendor' . $flag,
@@ -499,6 +534,15 @@ class ProductionBuilder implements BuilderInterface
      */
     protected function getMagentoDbVolumes(): array
     {
+        $os = $this->getOs();
+
+        if (self::OS_LINUX === $os) {
+            return [
+                $rootPath = $this->getRootPath() . 'var/lib/mysql:/var/lib/mysql',
+                '.docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d'
+            ];
+        }
+
         return [
             'magento-db:/var/lib/mysql',
             '.docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d'
