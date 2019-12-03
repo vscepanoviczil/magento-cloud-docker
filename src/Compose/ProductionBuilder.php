@@ -410,7 +410,16 @@ class ProductionBuilder implements BuilderInterface
 
         $os = $this->getOs();
 
-        if (self::OS_WINDOWS === $os) {
+        if (self::OS_LINUX !== $os) {
+            $volumes = [
+                'magento' => [
+                    'driver_opts' => [
+                        'type' => 'none',
+                        'device' => $rootPath,
+                        'o' => 'bind'
+                    ]
+                ]
+            ];
             $volumes['magento-vendor'] = $volumeConfig;
             $volumes['magento-generated'] = $volumeConfig;
             $volumes['magento-var'] = $volumeConfig;
