@@ -406,22 +406,19 @@ class ProductionBuilder implements BuilderInterface
         $volumeConfig = [];
         $rootPath = $this->getRootPath();
 
-        $volumes = [
-            'magento' => [
-                'driver_opts' => [
-                    'type' => 'none',
-                    'device' => $rootPath,
-                    'o' => 'bind'
-                ]
-            ],
-            'magento-vendor' => $volumeConfig,
-            'magento-generated' => $volumeConfig,
-            'magento-var' => $volumeConfig,
-            'magento-etc' => $volumeConfig,
-            'magento-static' => $volumeConfig,
-            'magento-media' => $volumeConfig,
-            'magento-db' => $volumeConfig,
-        ];
+        $volumes = [];
+
+        $os = $this->getOs();
+
+        if (self::OS_WINDOWS === $os) {
+            $volumes['magento-vendor'] = $volumeConfig;
+            $volumes['magento-generated'] = $volumeConfig;
+            $volumes['magento-var'] = $volumeConfig;
+            $volumes['magento-etc'] = $volumeConfig;
+            $volumes['magento-static'] = $volumeConfig;
+            $volumes['magento-media'] = $volumeConfig;
+            $volumes['magento-db'] = $volumeConfig;
+        }
 
         if ($this->getDockerMount()) {
             $volumes['docker-tmp'] = [
@@ -484,12 +481,12 @@ class ProductionBuilder implements BuilderInterface
         if (self::OS_LINUX === $os) {
             return [
                 $rootPath = $this->getRootPath() . ':' . self::DIR_MAGENTO . $flag,
-                $rootPath = $this->getRootPath() . 'vendor:' . self::DIR_MAGENTO . '/vendor' . $flag,
-                $rootPath = $this->getRootPath() . 'generated:' . self::DIR_MAGENTO . '/generated' . $flag,
-                $rootPath = $this->getRootPath() . 'var:' . self::DIR_MAGENTO . '/var:delegated',
-                $rootPath = $this->getRootPath() . 'app/etc:' . self::DIR_MAGENTO . '/app/etc:delegated',
-                $rootPath = $this->getRootPath() . 'pub/static:' . self::DIR_MAGENTO . '/pub/static:delegated',
-                $rootPath = $this->getRootPath() . 'pub/media:' . self::DIR_MAGENTO . '/pub/media:delegated',
+                $rootPath = $this->getRootPath() . '/vendor:' . self::DIR_MAGENTO . '/vendor' . $flag,
+                $rootPath = $this->getRootPath() . '/generated:' . self::DIR_MAGENTO . '/generated' . $flag,
+                $rootPath = $this->getRootPath() . '/var:' . self::DIR_MAGENTO . '/var:delegated',
+                $rootPath = $this->getRootPath() . '/app/etc:' . self::DIR_MAGENTO . '/app/etc:delegated',
+                $rootPath = $this->getRootPath() . '/pub/static:' . self::DIR_MAGENTO . '/pub/static:delegated',
+                $rootPath = $this->getRootPath() . '/pub/media:' . self::DIR_MAGENTO . '/pub/media:delegated',
             ];
         }
 
@@ -517,8 +514,8 @@ class ProductionBuilder implements BuilderInterface
         if (self::OS_LINUX === $os) {
             return [
                 $rootPath = $this->getRootPath() . ':' . self::DIR_MAGENTO . $flag,
-                $rootPath = $this->getRootPath() . 'vendor:' . self::DIR_MAGENTO . '/vendor' . $flag,
-                $rootPath = $this->getRootPath() . 'generated:' . self::DIR_MAGENTO . '/generated' . $flag,
+                $rootPath = $this->getRootPath() . '/vendor:' . self::DIR_MAGENTO . '/vendor' . $flag,
+                $rootPath = $this->getRootPath() . '/generated:' . self::DIR_MAGENTO . '/generated' . $flag,
             ];
         }
 
