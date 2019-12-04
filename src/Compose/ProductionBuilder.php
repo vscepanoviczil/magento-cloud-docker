@@ -544,7 +544,7 @@ class ProductionBuilder implements BuilderInterface
 
         if (self::OS_LINUX === $os) {
             return [
-                $rootPath = $this->getRootPath() . 'var/lib/mysql:/var/lib/mysql',
+                $this->getRootPath() . 'var/lib/mysql:/var/lib/mysql',
                 '.docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d'
             ];
         }
