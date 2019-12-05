@@ -33,13 +33,6 @@ class DeveloperBuilder extends ProductionBuilder
     {
         $compose = parent::build();
 
-        $os = $this->getOs();
-
-        if (self::OS_LINUX === $os) {
-            unset($compose['volumes']);
-            return $compose;
-        }
-
         $syncEngine = $this->getConfig()->get(self::KEY_SYNC_ENGINE);
         $syncConfig = [];
 
@@ -58,9 +51,14 @@ class DeveloperBuilder extends ProductionBuilder
         }
 
         $compose['volumes'] = [
-            'magento-sync' => $syncConfig,
             'magento-db' => []
         ];
+
+        $os = $this->getConfig()->get(self::KEY_OS);
+
+        if ($os !== self::OS_LINUX) {
+            $compose['volumes']['magento-sync'] = $syncConfig;
+        }
 
         return $compose;
     }

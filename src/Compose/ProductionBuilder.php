@@ -426,8 +426,9 @@ class ProductionBuilder implements BuilderInterface
             $volumes['magento-etc'] = $volumeConfig;
             $volumes['magento-static'] = $volumeConfig;
             $volumes['magento-media'] = $volumeConfig;
-            $volumes['magento-db'] = $volumeConfig;
         }
+
+        $volumes['magento-db'] = $volumeConfig;
 
         if ($this->getDockerMount()) {
             $volumes['docker-tmp'] = [
@@ -466,7 +467,7 @@ class ProductionBuilder implements BuilderInterface
             return '${WINDOWS_PWD}';
         }
 
-        return '${PWD}';
+        return './';
     }
 
     /**
