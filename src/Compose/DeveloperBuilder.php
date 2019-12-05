@@ -100,7 +100,7 @@ class DeveloperBuilder extends ProductionBuilder
     protected function getMagentoDbVolumes(): array
     {
         return [
-            $this->getRootPath() . '/var/lib/mysql:/var/lib/mysql',
+            '/var/lib/mysql:/var/lib/mysql',
             '.docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d'
         ];
     }
