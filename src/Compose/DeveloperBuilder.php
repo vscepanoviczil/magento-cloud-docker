@@ -77,7 +77,7 @@ class DeveloperBuilder extends ProductionBuilder
 
         if ($this->getConfig()->get(self::KEY_OS) === self::OS_LINUX) {
             return [
-                $this->getRootPath() . ':' . $target
+                './:' . $target
             ];
         }
 
@@ -100,7 +100,7 @@ class DeveloperBuilder extends ProductionBuilder
     protected function getMagentoDbVolumes(): array
     {
         return [
-            '/var/lib/mysql:/var/lib/mysql',
+            'magento-db:/var/lib/mysql',
             '.docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d'
         ];
     }
