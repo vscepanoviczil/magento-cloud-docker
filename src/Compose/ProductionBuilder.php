@@ -467,7 +467,7 @@ class ProductionBuilder implements BuilderInterface
             return '${WINDOWS_PWD}';
         }
 
-        return './';
+        return '${PWD}';
     }
 
     /**
@@ -490,13 +490,13 @@ class ProductionBuilder implements BuilderInterface
 
         if (self::OS_LINUX === $os) {
             return [
-                $rootPath = $this->getRootPath() . ':' . self::DIR_MAGENTO . $flag,
-                $rootPath = $this->getRootPath() . '/vendor:' . self::DIR_MAGENTO . '/vendor' . $flag,
-                $rootPath = $this->getRootPath() . '/generated:' . self::DIR_MAGENTO . '/generated' . $flag,
-                $rootPath = $this->getRootPath() . '/var:' . self::DIR_MAGENTO . '/var:delegated',
-                $rootPath = $this->getRootPath() . '/app/etc:' . self::DIR_MAGENTO . '/app/etc:delegated',
-                $rootPath = $this->getRootPath() . '/pub/static:' . self::DIR_MAGENTO . '/pub/static:delegated',
-                $rootPath = $this->getRootPath() . '/pub/media:' . self::DIR_MAGENTO . '/pub/media:delegated',
+                './:' . self::DIR_MAGENTO . $flag,
+                './vendor/:' . self::DIR_MAGENTO . '/vendor' . $flag,
+                './generated/:' . self::DIR_MAGENTO . '/generated' . $flag,
+                './var/:' . self::DIR_MAGENTO . '/var:delegated',
+                './app/etc/:' . self::DIR_MAGENTO . '/app/etc:delegated',
+                './pub/static/:' . self::DIR_MAGENTO . '/pub/static:delegated',
+                './pub/media/:' . self::DIR_MAGENTO . '/pub/media:delegated',
             ];
         }
 
@@ -523,9 +523,9 @@ class ProductionBuilder implements BuilderInterface
 
         if (self::OS_LINUX === $os) {
             return [
-                $rootPath = $this->getRootPath() . ':' . self::DIR_MAGENTO . $flag,
-                $rootPath = $this->getRootPath() . '/vendor:' . self::DIR_MAGENTO . '/vendor' . $flag,
-                $rootPath = $this->getRootPath() . '/generated:' . self::DIR_MAGENTO . '/generated' . $flag,
+                './:' . self::DIR_MAGENTO . $flag,
+                './vendor/:' . self::DIR_MAGENTO . '/vendor' . $flag,
+                './generated/:' . self::DIR_MAGENTO . '/generated' . $flag,
             ];
         }
 
@@ -545,7 +545,7 @@ class ProductionBuilder implements BuilderInterface
 
         if (self::OS_LINUX === $os) {
             return [
-                $this->getRootPath() . 'var/lib/mysql:/var/lib/mysql',
+                'magento-db:/var/lib/mysql',
                 '.docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d'
             ];
         }
